@@ -9,9 +9,22 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var pictures = [String]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        let fn = FileManager.default
+        let path = Bundle.main.resourcePath!
+        let items = try! fn.contentsOfDirectory(atPath: path)
+        
+        for item in items {
+            if item.hasPrefix("nssl") {
+                //this is a pictrure to load
+                pictures.append(item)
+            }
+        }
+        print(pictures)
+
     }
 
 
