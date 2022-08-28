@@ -15,6 +15,10 @@ class ViewController: UITableViewController {
         title = "Storm Viewer"
         navigationController?.navigationBar.prefersLargeTitles = true
         
+        performSelector(inBackground: #selector(fillPicturesArray), with: nil)
+    }
+    
+    @objc func fillPicturesArray() {
         let fn = FileManager.default
         let path = Bundle.main.resourcePath!
         let items = try! fn.contentsOfDirectory(atPath: path)
