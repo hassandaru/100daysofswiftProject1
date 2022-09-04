@@ -10,12 +10,37 @@ import UIKit
 class ViewController: UITableViewController {
 
     var pictures = [String]()
+    var counterImageOpened = 0 {
+        didSet {
+            let jsonEncoder = JSONEncoder()
+            if let savedData = try? jsonEncoder.encode(counterImageOpened) {
+                let defaults = UserDefaults.standard
+                defaults.set(savedData, forKey: "numberOfTimesImageOpened")
+            } else {
+                print("Failed to save number of times image opened.")
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Storm Viewer"
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        performSelector(inBackground: #selector(fillPicturesArray), with: nil)
+        fillPicturesArray()
+        
+        let defaults = UserDefaults.standard
+        
+        if let imagesOpened = defaults.object(forKey: "numberOfTimesImageOpened") as? Data {
+            let jsonDecoder = JSONDecoder()
+            
+            do {
+                counterImageOpened = try jsonDecoder.decode(Int.self, from: imagesOpened)
+            } catch {
+                print("failed to load value")
+            }
+        }
+        print("number of times = \(counterImageOpened)")
     }
     
     @objc func fillPicturesArray() {
@@ -50,9 +75,11 @@ class ViewController: UITableViewController {
             vc.selectedImage = pictures[indexPath.row]
             vc.location = indexPath.row
             vc.count = pictures.count
+            counterImageOpened += 1
             // 3: now push it onto the navigation controller
             navigationController?.pushViewController(vc, animated: true)
         }
     }
+    
 }
 
